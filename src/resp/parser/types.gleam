@@ -1,14 +1,13 @@
 pub type ParseError {
   UnexpectedInput(got: BitArray, expected: Expected)
-  LengthMismatch(length: Int)
   InvalidUnicode
+
+  WrongArguments(command: String)
+  InternalServerError
+  UnrecognisedCommand(command: String)
 }
 
 pub type Expected {
   ExpectedString(String)
   ExpectedBits(BitArray)
-}
-
-pub type RespCommand {
-  RespCommand(execute: fn() -> Nil)
 }

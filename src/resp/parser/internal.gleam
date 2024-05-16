@@ -1,11 +1,33 @@
 import gleam/bit_array
-import gleam/io
 import gleam/list
 import gleam/result
 import resp/parser/types.{type ParseError, InvalidUnicode, UnexpectedInput}
 
 pub type Parsed(t) {
   Parsed(parsed: t, rest: BitArray)
+}
+
+pub fn parse_array(request: BitArray) -> Result(List(String), ParseError) {
+  case request {
+    <<"*":utf8, rest:bits>> -> {
+      parse_digits(rest, 0)
+      |> result.try(fn(parsed_digits) {
+        parse_array_elements(parsed_digits.rest, [], parsed_digits.parsed)
+      })
+      |> result.try(fn(parsed_array_elems) {
+        case parsed_array_elems.rest {
+          <<>> -> Ok(parsed_array_elems.parsed)
+          _ ->
+            Error(UnexpectedInput(
+              parsed_array_elems.rest,
+              types.ExpectedBits(<<>>),
+            ))
+        }
+      })
+    }
+    invalid_input ->
+      Error(UnexpectedInput(invalid_input, types.ExpectedBits(<<"*":utf8>>)))
+  }
 }
 
 pub fn parse_array_elements(

@@ -1,10 +1,9 @@
 import gleeunit/should
-import resp/parser
 import resp/parser/internal
 import resp/parser/types
 
 pub fn parse_bulk_string_array_test() {
-  parser.parse_request(<<"*2\r\n$4\r\nLLEN\r\n$6\r\nmylist\r\n":utf8>>)
+  internal.parse_array(<<"*2\r\n$4\r\nLLEN\r\n$6\r\nmylist\r\n":utf8>>)
   |> should.equal(Ok(["LLEN", "mylist"]))
 }
 
