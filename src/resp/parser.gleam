@@ -1,23 +1,52 @@
+import gleam/bit_array
 import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
 import resp
+import resp/encoder
 import resp/parser/internal
 import resp/parser/types.{
   type ParseError, InternalServerError, UnrecognisedCommand, WrongArguments,
 }
 
-
-pub fn parse_resp_request(bits: BitArray) -> Result(resp.RespCommand, ParseError) {
+pub fn parse_resp_request(
+  bits: BitArray,
+) -> Result(resp.RespCommand, ParseError) {
   internal.parse_array(bits)
   |> result.try(build_resp_command)
+}
+
+pub fn build_parse_error_message(resp_error: ParseError) -> BitArray {
+  case resp_error {
+    types.UnexpectedInput(got, expected) ->
+      encoder.encode_simple_error(
+        "Unexpected input: "
+        <> got
+        |> bit_array.to_string
+        |> result.unwrap("<Could not parse unexpected input as utf8>")
+        <> "\nExpected: "
+        <> case expected {
+          types.ExpectedString(str) -> str
+          types.ExpectedBits(bits) ->
+            bits
+            |> bit_array.to_string
+            |> result.unwrap("<Could not parse expected input as utf8>")
+        },
+      )
+    types.InvalidUnicode -> encoder.encode_simple_error("Invalid Unicode")
+    types.WrongArguments(command) ->
+      encoder.encode_simple_error("Wrong arguments for: " <> command)
+    types.InternalServerError ->
+      encoder.encode_simple_error("Internal server error")
+    types.UnrecognisedCommand(command) ->
+      encoder.encode_simple_error("Could not recognise command: " <> command)
+  }
 }
 
 fn build_resp_command(
   bulk_string_arr: List(String),
 ) -> Result(resp.RespCommand, ParseError) {
-  io.debug(bulk_string_arr)
   case list.first(bulk_string_arr) {
     Ok(command) ->
       case string.lowercase(command), bulk_string_arr {
