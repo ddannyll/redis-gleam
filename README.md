@@ -1,34 +1,9 @@
-[![progress-banner](https://backend.codecrafters.io/progress/redis/ac5585b7-1791-4ac5-9eff-b22762f0bf0d)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Redis in GleamLang
 
-This is a starting point for Gleam solutions to the
-["Build Your Own Redis" Challenge](https://codecrafters.io/challenges/redis).
+I was bored over the holidays and decided to try build REDIS using **Gleam!!**
 
-In this challenge, you'll build a toy Redis clone that's capable of handling
-basic commands like `PING`, `SET` and `GET`. Along the way we'll learn about
-event loops, the Redis protocol and more.
+My first time using a _functional_ language to this extent.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+Was a bit tricky working without mutability, if statments and loops... but I got used to it eventually :)
 
-# Passing the first stage
-
-The entry point for your Redis implementation is in `src/redis.gleam`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
-
-```sh
-git add .
-git commit -m "pass 1st stage" # any msg
-git push origin master
-```
-
-That's all!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `gleam (1.0)` installed locally
-1. Run `./spawn_redis_server.sh` to run your Redis server, which is implemented
-   in `src/redis.gleam`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+This challenge was taken from [Code Crafters](https://app.codecrafters.io/)
