@@ -1,5 +1,7 @@
 import gleam/bit_array
+import gleam/int
 import gleam/list
+import gleam/option.{type Option, None, Some}
 import gleam/result
 import gleam/string
 import resp
@@ -54,7 +56,14 @@ fn build_resp_command(
         "echo", [_, str] -> Ok(resp.Echo(str))
         "echo", _ -> Error(WrongArguments("echo"))
 
-        "set", [_, key, value] -> Ok(resp.Set(key, value))
+        "set", [_, key, value] -> Ok(resp.Set(key, value, None))
+        "set", [_, key, value, px, expiry] -> {
+          case string.lowercase(px), int.parse(expiry) {
+            "px", Ok(expiry) if expiry >= 0 ->
+              Ok(resp.Set(key, value, Some(expiry)))
+            _, _ -> Error(WrongArguments("set"))
+          }
+        }
         "set", _ -> Error(WrongArguments("set"))
 
         "get", [_, key] -> Ok(resp.Get(key))

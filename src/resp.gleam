@@ -1,11 +1,13 @@
+import gleam/option.{type Option, None, Some}
 import gleam/result
+import birl/duration
 import resp/encoder
 import store.{type RedisStore}
 
 pub type RespCommand {
   Ping
   Echo(String)
-  Set(key: String, value: String)
+  Set(key: String, value: String, expiry: Option(Int))
   Get(key: String)
 }
 
@@ -18,8 +20,12 @@ pub fn execute_resp_command(
   case resp_command {
     Ping -> #(redis_store, encoder.encode_simple_string("PONG"))
     Echo(str) -> #(redis_store, encoder.encode_simple_string(str))
-    Set(key, value) -> #(
-      store.set(redis_store, key, value),
+    Set(key, value, None) -> #(
+      store.set(redis_store, key, value, None),
+      encoder.encode_simple_string("OK"),
+    )
+    Set(key, value, Some(expiry)) -> #(
+      store.set(redis_store, key, value, Some(duration.milli_seconds(expiry))),
       encoder.encode_simple_string("OK"),
     )
     Get(key) -> {
