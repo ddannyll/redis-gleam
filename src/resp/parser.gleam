@@ -1,5 +1,4 @@
 import gleam/bit_array
-import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
@@ -51,8 +50,15 @@ fn build_resp_command(
     Ok(command) ->
       case string.lowercase(command), bulk_string_arr {
         "ping", _ -> Ok(resp.Ping)
+
         "echo", [_, str] -> Ok(resp.Echo(str))
         "echo", _ -> Error(WrongArguments("echo"))
+
+        "set", [_, key, value] -> Ok(resp.Set(key, value))
+        "set", _ -> Error(WrongArguments("set"))
+
+        "get", [_, key] -> Ok(resp.Get(key))
+        "get", _ -> Error(WrongArguments("get"))
         _, _ -> Error(UnrecognisedCommand(command))
       }
     Error(_) -> Error(InternalServerError)
