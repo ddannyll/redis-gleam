@@ -4,7 +4,7 @@ import gleam/bytes_builder
 import gleam/erlang/process
 import gleam/option.{None}
 import gleam/otp/actor
-import glisten.{Packet, User}
+import glisten.{Packet}
 import resp
 import resp/parser
 import store
