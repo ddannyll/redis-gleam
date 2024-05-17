@@ -1,6 +1,6 @@
+import birl/duration
 import gleam/option.{type Option, None, Some}
 import gleam/result
-import birl/duration
 import resp/encoder
 import store.{type RedisStore}
 
@@ -33,7 +33,7 @@ pub fn execute_resp_command(
       #(
         redis_store,
         get_result
-          |> result.map(encoder.encode_simple_string)
+          |> result.map(encoder.encode_bulk_string)
           |> result.unwrap(nil_bulk_string),
       )
     }
