@@ -1,4 +1,4 @@
-# Redis in GleamLang
+# Redis in Gleam(Lang)
 
 I was bored over the holidays and decided to try build REDIS using **Gleam!!**
 
